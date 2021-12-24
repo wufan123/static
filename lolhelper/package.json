@@ -1,0 +1,16 @@
+{
+  "name": "lolhelper",
+  "version": "1.0.0",
+  "description": "lol helper ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "waslong",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "fs-extra": "^10.0.0"
+  }
+}
