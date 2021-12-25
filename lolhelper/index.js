@@ -1,3 +1,4 @@
+
 let summonerSkills = [
   {
     name: "屏障",
@@ -97,9 +98,15 @@ new Vue({
     summonerSkills: summonerSkills,
     showSkillsDia: false,
     activeLine: null,
-    summonerSkillSpeed:18
+    summonerSkillSpeed:[],
+    summonerSpeedList:[{label:'星界洞悉',value:18},{label:'明朗之靴',value:12}],
+    popupVisible:false,
+    searchKey:"",
+    roles:"",
+    heroList:[],
   },
   created() {
+    this.getHeroList();
     this.lineList = this.lineList.map((item) => {
       item.playerSkills = item.playerSkills.map((subitem) => {
         var skill = { canUse: 0, ...this.getSKillByName(subitem) };
@@ -107,7 +114,7 @@ new Vue({
       });
     //   item.mode = 1;
     //   item.skillSpeed = "";
-      return {mode:1,skillSpeed:"",...item}; 
+      return {mode:1,skillSpeed:[],...item}; 
     });
     this.summonerSkills = this.summonerSkills.map((item) => {
       return { select: false, ...item };
@@ -117,6 +124,13 @@ new Vue({
     }
   },
   methods: {
+    getHeroList:async function(){
+       var {data} = await axios.get("./data/hero_list.json");
+       this.heroList = data.hero.map(item=>{
+         return {icon:`//game.gtimg.cn/images/lol/act/img/champion/${item.alias}.png`,...item}
+       });
+
+    },
     resetAll:_.throttle(function(){
         this.lineList.forEach(line=>{
             line.playerSkills.forEach(skill=>{
@@ -137,12 +151,12 @@ new Vue({
       if (line.mode) {
         //mode 1 显示cd
         if (skill.canUse == 0) {
-          if (line.skillSpeed) {  
+          // if (line.skillSpeed) {  
             // console.log(this.getCDAfterSpeed());
-            skill.canUse = this.getCDAfterSpeed(skill.cd,this.summonerSkillSpeed)
-          } else {
-            skill.canUse = skill.cd;
-          }
+            skill.canUse = this.getCDAfterSpeed(skill.cd,line.skillSpeed.length?line.skillSpeed.reduce((a,b)=>a+b):0)
+          // } else {
+          //   skill.canUse = skill.cd;
+          // }
         } else {
           skill.canUse = skill.canUse - 10 >= 0 ? skill.canUse - 10 : 0;
         }
@@ -194,6 +208,7 @@ new Vue({
       this.showSkillsDia =false;
     },
     getCDAfterSpeed(cd, num) {
+      console.log(cd,num);
       return parseInt(cd / (1 + num / 100));
     },
   },
