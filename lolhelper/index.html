@@ -139,7 +139,7 @@
         </mt-navbar>
         <ul class="hero-list">
           <li v-for="(item, index) in rolesHeroList" :key="index" v-on:click="chooseHero(item)">
-            <img v-lazy="item.icon" alt="">
+            <img  :src="item.icon" alt="">
             <p>{{item.name}}</p>
           </li>
         </ul>
