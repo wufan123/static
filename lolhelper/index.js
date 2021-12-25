@@ -40,16 +40,16 @@ let summonerSkills = [
     cd: 240,
     icon: "./imgs/SummonerMana.png",
   },
-  {
-    name: "护驾",
-    cd: 10,
-    icon: "./imgs/SummonerPoroRecall.png",
-  },
-  {
-    name: "魄罗投掷",
-    cd: 10,
-    icon: "./imgs/SummonerPoroThrow.png",
-  },
+  // {
+  //   name: "护驾",
+  //   cd: 10,
+  //   icon: "./imgs/SummonerPoroRecall.png",
+  // },
+  // {
+  //   name: "魄罗投掷",
+  //   cd: 10,
+  //   icon: "./imgs/SummonerPoroThrow.png",
+  // },
   {
     name: "惩戒",
     cd: 15,
