@@ -98,12 +98,13 @@ new Vue({
     summonerSkills: summonerSkills,
     showSkillsDia: false,
     activeLine: null,
-    summonerSkillSpeed:[],
-    summonerSpeedList:[{label:'星界洞悉',value:18},{label:'明朗之靴',value:12}],
-    popupVisible:false,
-    searchKey:"",
-    roles:"",
-    heroList:[],
+    summonerSkillSpeed: [],
+    summonerSpeedList: [{ label: '星界洞悉', value: 18 }, { label: '明朗之靴', value: 12 }],
+    popupVisible: false,
+    searchKey: "",
+    roles: "",
+    heroList: [],
+
   },
   created() {
     this.getHeroList();
@@ -112,32 +113,92 @@ new Vue({
         var skill = { canUse: 0, ...this.getSKillByName(subitem) };
         return skill;
       });
-    //   item.mode = 1;
-    //   item.skillSpeed = "";
-      return {mode:1,skillSpeed:[],...item}; 
+      return { heroDetail: null, mode: 1, skillSpeed: [], ...item };
     });
     this.summonerSkills = this.summonerSkills.map((item) => {
-      return { select: false, ...item };
+      return { select: false, ...item }; 
     });
     if (!this.timer) {
       this.timer = setInterval(this.clockTick, 1000);
     }
   },
+  computed: {
+
+    rolesHeroList: function () {
+      return this.heroList.filter(item => {
+        var rolesStr = item.roles.join(",")
+        return rolesStr.indexOf(this.roles) >= 0 && item.keywords.indexOf(this.searchKey ? this.searchKey : "") >= 0
+      })
+    }
+  },
   methods: {
-    getHeroList:async function(){
-       var {data} = await axios.get("./data/hero_list.json");
-       this.heroList = data.hero.map(item=>{
-         return {icon:`//game.gtimg.cn/images/lol/act/img/champion/${item.alias}.png`,...item}
-       });
+    changeHeroSpeed: function (hero, num) {
+      // console.log(hero); 
+      var newSpeed = hero.spellSpeed + num;
+      if (num == 10) {
+        hero.spellSpeed = newSpeed
+      } else {
+        hero.spellSpeed = newSpeed < 0 ? 0 : newSpeed; 
+      }
+    },
+    changeGrade: function (skill, num) {
+      var newGrade = skill.grade + num;
+      if (num == 1) {
+        skill.grade = newGrade >= skill.cooldown.length - 1 ? skill.cooldown.length - 1 : newGrade;
+      } else {
+        skill.grade = newGrade < 0 ? 0 : newGrade;
+      }
+    },
+    clickHeroSkillIcon: function (line, skill) {
+      if (skill.canUse == 0) {
+        skill.canUse = this.getCDAfterSpeed(skill.cooldown ? skill.cooldown[skill.grade] : 0,line.heroDetail.spellSpeed);  
+      } else {
+        skill.canUse = skill.canUse - 10 >= 0 ? skill.canUse - 10 : 0;
+      }
+    },
+    chooseHero: async function (hero) {
+      this.popupVisible = false;
+      this.$indicator.open('载入英雄数据中...');
+      var { data } = await axios.get(`./data/${hero.heroId}.json`);
+      this.$indicator.close();
+      var title = data.hero.title;
+      var skin = data.skins.shift();
+      var icon = skin.iconImg;
+      var loadingImg = skin.loadingImg;
+      var loadingImgStyleStr = `'url(${loadingImg})'`
+      var spellSort = ["passive", "q", "w", "e", "r"]
+
+      data.spells = data.spells.sort((a, b) => {
+        return spellSort.indexOf(a.spellKey) - spellSort.indexOf(b.spellKey)
+      });
+      data.spells = data.spells.map(item => {
+        if (item.cooldown && item.cooldown.length) {
+          item.cooldown = item.cooldown.sort((a, b) => {
+            return b - a;
+          })
+        }
+        var canUse = 0;
+        var grade = 0;
+     
+        return {canUse, grade, ...item }
+      })
+      var spellSpeed = 0; 
+      this.activeLine.heroDetail = {spellSpeed,title, icon, loadingImg, loadingImgStyleStr, ...data };
+    },
+    getHeroList: async function () {
+      var { data } = await axios.get("./data/hero_list.json");
+      this.heroList = data.hero.map(item => {
+        return { icon: `//game.gtimg.cn/images/lol/act/img/champion/${item.alias}.png`, ...item }
+      });
 
     },
-    resetAll:_.throttle(function(){
-        this.lineList.forEach(line=>{
-            line.playerSkills.forEach(skill=>{
-                skill.canUse = 0; 
-            })
+    resetAll: _.throttle(function () {
+      this.lineList.forEach(line => {
+        line.playerSkills.forEach(skill => {
+          skill.canUse = 0;
         })
-    },300), 
+      })
+    }, 300),
     getSKillByName(name) {
       var arr = summonerSkills.filter((item) => {
         return item.name == name;
@@ -149,14 +210,8 @@ new Vue({
     },
     clickIcon(line, skill) {
       if (line.mode) {
-        //mode 1 显示cd
         if (skill.canUse == 0) {
-          // if (line.skillSpeed) {  
-            // console.log(this.getCDAfterSpeed());
-            skill.canUse = this.getCDAfterSpeed(skill.cd,line.skillSpeed.length?line.skillSpeed.reduce((a,b)=>a+b):0)
-          // } else {
-          //   skill.canUse = skill.cd;
-          // }
+          skill.canUse = this.getCDAfterSpeed(skill.cd, line.skillSpeed.length ? line.skillSpeed.reduce((a, b) => a + b) : 0)
         } else {
           skill.canUse = skill.canUse - 10 >= 0 ? skill.canUse - 10 : 0;
         }
@@ -176,6 +231,18 @@ new Vue({
             subitem.canUse = 0;
           }
         });
+        if (!item.heroDetail) {
+          return;
+        }
+        var spells = item.heroDetail.spells;
+
+        spells.forEach(subitem => {
+          if (subitem.canUse > 0) {
+            subitem.canUse -= 1;
+          } else {
+            subitem.canUse = 0;
+          }
+        })
       });
     },
     deleteSkill(skills, skill) {
@@ -205,10 +272,9 @@ new Vue({
       });
       this.activeLine.mode = 1;
       this.activeLine = null;
-      this.showSkillsDia =false;
+      this.showSkillsDia = false;
     },
     getCDAfterSpeed(cd, num) {
-      console.log(cd,num);
       return parseInt(cd / (1 + num / 100));
     },
   },

@@ -31,7 +31,7 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <link rel="stylesheet" href="./css/index.css" />
   <link rel="stylesheet" href="./css/reset.css" />
-  <title>LOL技能计时器</title>
+  <title>LOL辅助</title>
 </head>
 
 <body>
@@ -43,36 +43,60 @@
         <!-- <li class="top-bar">
           <div class="btn1" v-on:click="resetAll">重置游戏</div>
         </li> -->
-        <li v-for="(item, index) in lineList" :key="index">
-          <span class="tag"> {{item.name}}</span>
-          <div class="toollist">
-            <mt-checklist v-model="item.skillSpeed" :options="summonerSpeedList">
-            </mt-checklist>
-
-            <a class="edit" v-on:click="item.mode=item.mode?0:1">{{item.mode?'编辑':'完成'}}</a>
-            <!-- 星界洞悉
-            <input type="checkbox" value="true" v-model="item.skillSpeed" /> -->
-          </div>
-          <div class="skill-box">
-            <div class="img-box" v-for="(subitem, index) in item.playerSkills">
-              <img class="player-skill" :class="{gray:subitem.canUse}" :key="index" :src="subitem.icon"
-                alt="subitem.name" v-on:click="clickIcon(item,subitem)" />
-              <span class="cd">{{subitem.canUse?subitem.canUse+'s':''}}</span>
-              <span class="delete1" v-show="!item.mode"></span>
-              <div class="btn1" v-show="subitem.canUse" v-on:click="subitem.canUse=0">
-                <span class="reset1"></span>
-                <!-- 重置 -->
+        <!--  -->
+        <li v-for="(item, index) in lineList" :key="index"
+          :style="{backgroundImage:item.heroDetail?'url('+item.heroDetail.loadingImg+')':'#fff'}">    
+          <div class="wrapper">
+            <span class="tag"> {{item.name}}{{item.heroDetail?`-${item.heroDetail.title}`:""}} </span>
+            <div class="toollist">
+              <mt-checklist v-model="item.skillSpeed" :options="summonerSpeedList">
+              </mt-checklist>
+              <a class="edit" v-on:click="item.mode=item.mode?0:1">{{item.mode?'编辑':'完成'}}</a>
+              <!-- 星界洞悉
+              <input type="checkbox" value="true" v-model="item.skillSpeed" /> -->
+            </div>
+            <div class="skill-box">
+              <div class="img-box" v-for="(subitem, index) in item.playerSkills">
+                <img class="player-skill" :class="{gray:subitem.canUse}" :key="index" :src="subitem.icon"
+                  alt="subitem.name" v-on:click="clickIcon(item,subitem)" />
+                <span class="cd">{{subitem.canUse?subitem.canUse+'s':''}}</span>
+                <span class="delete1" v-show="!item.mode"></span>
+                <div class="btn1" v-show="subitem.canUse" v-on:click="subitem.canUse=0">
+                  <span class="reset1"></span> 
+                  <!-- 重置 -->
+                </div>
+              </div>
+              <div class="img-box" v-if="!item.mode" v-on:click="showSkillsDia=true;activeLine=item;">
+                <img class="player-skill" src="./imgs/add.png" alt="" />
               </div>
             </div>
-            <div class="img-box" v-if="!item.mode" v-on:click="showSkillsDia=true;activeLine=item;">
-              <img class="player-skill" src="./imgs/add.png" alt="" />
+            <div class="expand-box" v-if="!item.heroDetail">
+              <!-- <p>添加对线英雄 +</p> -->
+              <span class="expand" v-on:click="popupVisible=true;activeLine=item;"></span>
+            </div>
+            <div class="skill-box hero" v-if="item.heroDetail">
+              <div class="btn1 icon" v-on:click="popupVisible=true;activeLine=item;"><img
+                :src="item.heroDetail.icon" alt=""> 更换英雄</div>
+              <div class="skill-des right"><span v-on:click="changeHeroSpeed(item.heroDetail,-10)">-</span>技能急速:{{item.heroDetail.spellSpeed}}<span v-on:click="changeHeroSpeed(item.heroDetail,10)">+</span> </div>
+              <div class="cf "></div>
+              <div class="img-box" :class="subitem.spellKey" v-for="(subitem, index) in item.heroDetail.spells">
+                <img class="player-skill" :class="{gray:subitem.canUse}" :key="index" :src="subitem.abilityIconPath"
+                  alt="subitem.name" v-on:click="clickHeroSkillIcon(item,subitem)" />
+                <span class="cd">{{subitem.canUse?subitem.canUse+'s':''}}</span>
+        
+                <p class="skill-name">{{subitem.name}}</p>
+                <p v-if="subitem.spellKey!='passive'" class="skill-des"><span v-on:click="changeGrade(subitem,-1)">-</span>{{subitem.grade+1}}级 <span v-on:click="changeGrade(subitem,1)">+</span></p>
+                <div class="btn1" v-show="subitem.canUse" v-on:click="subitem.canUse=0">
+                  <span class="reset1"></span>
+                  <!-- 重置 -->
+                </div>
+              </div>
+              <div class="img-box" v-if="!item.mode" v-on:click="showSkillsDia=true;activeLine=item;">
+                <img class="player-skill" src="./imgs/add.png" alt="" />
+              </div>
             </div>
           </div>
-          <div class="expand-box">
-            
-            <!-- <p>添加对线英雄 +</p> -->
-            <span class="expand" v-on:click="popupVisible=true"></span>
-          </div>
+
         </li>
 
       </ul>
@@ -100,8 +124,10 @@
     </div>
     <mt-popup v-model="popupVisible" position="right">
       <div class="search-pop">
-        <mt-header fixed title="选择英雄"><mt-button slot="left" icon="back" v-on:click="popupVisible=false" ></mt-button></mt-header>
-        <mt-search v-model="searchKey"  placeholder="搜索英雄"></mt-search>
+        <mt-header fixed title="选择英雄">
+          <mt-button slot="left" icon="back" v-on:click="popupVisible=false"></mt-button>
+        </mt-header>
+        <mt-search v-model="searchKey" placeholder="搜索英雄"></mt-search>
         <mt-navbar v-model="roles">
           <mt-tab-item id="">全部</mt-tab-item>
           <mt-tab-item id="fighter">战士</mt-tab-item>
@@ -112,7 +138,7 @@
           <mt-tab-item id="support">辅助</mt-tab-item>
         </mt-navbar>
         <ul class="hero-list">
-          <li v-for="(item, index) in heroList" :key="index">
+          <li v-for="(item, index) in rolesHeroList" :key="index" v-on:click="chooseHero(item)">
             <img v-lazy="item.icon" alt="">
             <p>{{item.name}}</p>
           </li>

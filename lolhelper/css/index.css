@@ -9,21 +9,21 @@
    font-size: .20rem;
    text-align: center;
    width: 1.2rem;
-   margin-right: .2rem;
+   width: 20%;
    white-space: nowrap;
    overflow: hidden;
    text-overflow: ellipsis;
 }
 .hero-list {
     padding-top: 3rem;
-    padding-left: .35rem;
+    /* padding-left: .35rem; */
     height: calc(100vh - 2.8rem);
     overflow-y: auto;
     overflow-x: hidden;
 }
 .search-pop .mint-navbar{
     position: fixed;
-    top:1.8rem;
+    top:1.7rem;
     height: .8rem;
     width: 100%;
 }
@@ -60,6 +60,7 @@
    min-height: initial;
    display:  inline-block;
    margin-right: .1rem;
+   background: none;
    
 }
 .toollist .mint-checklist .mint-cell-wrapper{
@@ -98,15 +99,40 @@
     /* width: 90%; */
     
 }
+.battle-line .skill-box.hero{
+    border-top: rgb(115, 166, 225) 1px solid;
+    padding-top: .2rem;
+}
+.battle-line .skill-box.hero .img-box.passive::before{
+    content: "被动";
+    position: absolute; 
+    top: 0;
+    left: 0;
+    color: white;
+    background-color: #ccc;
+    font-size: .18rem;
+    border-top-left-radius: 3px;
+    border-bottom-right-radius: 4px;
+    padding: 0 .05rem;
+    pointer-events: none;
+}
 
 .battle-line li {
     position: relative;
     background: #fff;
-    margin: 0 .2rem .2rem;
-    padding: .6rem .2rem .1rem;
+    margin: 0 0.2rem 0.2rem;
     border-radius: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.03);
+    /* border: 1px solid rgba(0, 0, 0, 0.03); */
     box-shadow: 0 6px 30px -10px rgb(0 0 0 / 30%);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: start;
+    
+}
+.battle-line li .wrapper{
+    padding: 0.6rem 0.2rem 0.1rem;
+    background-image: linear-gradient(to right, rgba(255,255,255,1),rgba(255,255,255,.8),rgba(255,255,255,0));
+    /* border: white solid 1px; */
 }
 
 .battle-line .tag {
@@ -120,6 +146,7 @@
     padding: 0 .4rem;
 
 }
+
 
 .battle-line li .img-box {
     width: 1rem;
@@ -142,6 +169,57 @@
     text-align: center;
     font-size: .32rem;
     pointer-events: none;
+}
+.battle-line .skill-name{
+    font-size: .18rem;
+   text-align: center;
+   white-space: nowrap;
+   width: 100%;
+   overflow: hidden;
+   text-overflow: ellipsis;
+}
+.cf{
+    clear: both;
+}
+.fr{
+    float: right;
+}
+.hero .btn1.icon{
+    display: block;
+    width: 3rem;
+    margin:  0 auto;
+    padding: .1rem 0;
+    height: auto;
+    border-radius: 10px;
+}
+.hero .btn1 img{ 
+    height: .8rem;
+    width: .8rem;
+    border-radius: 50%;
+    vertical-align: -4px;
+    vertical-align: middle;
+    margin-right: .1rem;
+}
+.battle-line .skill-des.right{
+    float: right;
+    margin-bottom: .1rem;
+}
+.battle-line .skill-des{
+    font-size: .22rem;
+   text-align: center;
+   /* color: #aaa; */
+   white-space: nowrap;
+}
+.battle-line  .skill-des span{
+    background-color: rgb(115, 166, 225);
+    color: white;
+    font-size: .22rem;
+    display: inline-block;
+    width: .24rem;
+    height: .24rem;
+    line-height: .24rem;
+    border-radius: 50%;
+    margin: 0 .05rem;
 }
 .battle-line li .player-skill {
     width: 1rem;
@@ -281,14 +359,14 @@
 }
 
 .skills {
-    padding-left: .4rem;
  
 }
  .skills li{
   display: inline-block; 
   text-align: center;
   position: relative;
-  margin-right: .2rem;
+  /* margin-right: .2rem; */
+  width: 25%;
   margin-bottom: .2rem;
   /* width: .64rem; */
 }
