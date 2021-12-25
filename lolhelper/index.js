@@ -12,7 +12,7 @@ let summonerSkills = [
   },
   {
     name: "点燃",
-    cd: 210,
+    cd: 180,
     icon: "./imgs/SummonerDot.png",
   },
   {
@@ -27,7 +27,7 @@ let summonerSkills = [
   },
   {
     name: "疾跑",
-    cd: 180,
+    cd: 210,
     icon: "./imgs/SummonerHaste.png",
   },
   {
@@ -37,7 +37,7 @@ let summonerSkills = [
   },
   {
     name: "清晰",
-    cd: 10,
+    cd: 240,
     icon: "./imgs/SummonerMana.png",
   },
   {
@@ -52,17 +52,17 @@ let summonerSkills = [
   },
   {
     name: "惩戒",
-    cd: 75,
+    cd: 15,
     icon: "./imgs/SummonerSmite.png",
   },
   {
     name: "标记",
-    cd: 10,
+    cd: 80,
     icon: "./imgs/SummonerSnowball.png",
   },
   {
     name: "传送",
-    cd: 300,
+    cd: 420,
     icon: "./imgs/SummonerTeleport.png",
   },
 ];
