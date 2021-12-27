@@ -21,7 +21,10 @@
   <!-- uc强制竖屏 -->
   <meta name="x5-orientation" content="portrait" />
   <!-- QQ强制竖屏 -->
-
+  <link rel="stylesheet" href="./css/loading.css">
+  <link rel="stylesheet" href="./css/reset.css" />
+  <link rel="stylesheet" href="./css/index.css" />
+ 
   <script src="./vue.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/loadsh@0.0.4/lodash.min.js"></script>
   <!-- 引入样式 -->
@@ -29,22 +32,21 @@
   <!-- 引入组件库 -->
   <script src="https://unpkg.com/mint-ui/lib/index.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <link rel="stylesheet" href="./css/index.css" />
-  <link rel="stylesheet" href="./css/reset.css" />
+
   <title>LOL辅助</title>
 </head>
 
 <body>
-  <div id="app">
+  <div id="app" :class="{init:init}">
     <div>
       <!-- <p>召唤师技能</p> -->
-      <mt-header fixed title="LOL助手"></mt-header>
+      <mt-header fixed title="LOL辅助"><span class="reset1" slot="right" v-on:click="resetAll"></span> </mt-header>
       <ul class="battle-line">
         <!-- <li class="top-bar">
           <div class="btn1" v-on:click="resetAll">重置游戏</div>
         </li> -->
         <!--  -->
-        <li v-for="(item, index) in lineList" :key="index"
+        <li v-for="(item, index) in lineList" :key="index" 
           :style="{backgroundImage:item.heroDetail?'url('+item.heroDetail.loadingImg+')':'#fff'}">    
           <div class="wrapper">
             <span class="tag"> {{item.name}}{{item.heroDetail?`-${item.heroDetail.title}`:""}} </span>
@@ -106,7 +108,8 @@
       <span>tip:</span>
       <p>技能cd期间再次点击减少10s</p>
       <p>右上角编辑可以增加或删除召唤师技能</p>
-      <p>当前版本星界洞悉技能急速为：18</p>
+      <p>当前版本星界洞悉召唤师技能急速为：18</p>
+      <p>当前版本明朗之靴召唤师技能急速为：12</p>  
     </div>
     <div class="mask" v-if="showSkillsDia" v-on:click="showSkillsDia=false">
       <div class="dia" v-on:click.stop="">
@@ -127,25 +130,35 @@
         <mt-header fixed title="选择英雄">
           <mt-button slot="left" icon="back" v-on:click="popupVisible=false"></mt-button>
         </mt-header>
-        <mt-search v-model="searchKey" placeholder="搜索英雄"></mt-search>
-        <mt-navbar v-model="roles">
-          <mt-tab-item id="">全部</mt-tab-item>
-          <mt-tab-item id="fighter">战士</mt-tab-item>
-          <mt-tab-item id="mage">法师</mt-tab-item>
-          <mt-tab-item id="assassin">刺客</mt-tab-item>
-          <mt-tab-item id="tank">坦克</mt-tab-item>
-          <mt-tab-item id="marksman">射手</mt-tab-item>
-          <mt-tab-item id="support">辅助</mt-tab-item>
-        </mt-navbar>
+        <div class="poptool">
+          <mt-search v-model="searchKey" placeholder="搜索英雄"></mt-search>
+          <mt-navbar v-model="roles">
+            <mt-tab-item id="">全部</mt-tab-item>
+            <mt-tab-item id="fighter">战士</mt-tab-item>
+            <mt-tab-item id="mage">法师</mt-tab-item>
+            <mt-tab-item id="assassin">刺客</mt-tab-item>
+            <mt-tab-item id="tank">坦克</mt-tab-item>
+            <mt-tab-item id="marksman">射手</mt-tab-item>
+            <mt-tab-item id="support">辅助</mt-tab-item>
+          </mt-navbar>
+        </div>
+    
         <ul class="hero-list">
           <li v-for="(item, index) in rolesHeroList" :key="index" v-on:click="chooseHero(item)">
             <img  :src="item.icon" alt="">
             <p>{{item.name}}</p>
           </li>
+          <li class="tip" v-show="!rolesHeroList.length">
+            没有找到相关英雄哦
+          </li>
         </ul>
       </div>
     </mt-popup>
 
+  </div>
+  <div id="initLoading" :class="{init:!init}">
+    <img src="./imgs/SummonerFlash.png" alt="">
+    <p>页面载入中...</p>
   </div>
   <script src="index.js"></script>
 </body>

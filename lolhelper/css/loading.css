@@ -1,0 +1,19 @@
+#initLoading.init{
+    display: none; 
+}
+#initLoading{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%); 
+    filter: grayscale(1);
+}
+#initLoading img{
+    border-radius: 10%;
+}
+#initLoading p{
+    font-size: .22rem;
+    margin-top: .2rem;
+    text-align: center; 
+    color: rgb(115, 166, 225);
+}

@@ -78,7 +78,7 @@ let list = [
   },
   {
     name: "中路",
-    playerSkills: ["闪现", "点燃", "传送"],
+    playerSkills: ["闪现", "点燃", "传送"], 
   },
   {
     name: "下路",
@@ -86,7 +86,7 @@ let list = [
   },
   {
     name: "辅助",
-    playerSkills: ["闪现", "治疗", "虚弱"],
+    playerSkills: ["闪现", "虚弱", "治疗","点燃"],
   },
 ];
 
@@ -95,16 +95,16 @@ new Vue({
   data: {
     lineList: list,
     timer: null,
-    summonerSkills: summonerSkills,
+    summonerSkills: summonerSkills, 
     showSkillsDia: false,
     activeLine: null,
     summonerSkillSpeed: [],
     summonerSpeedList: [{ label: '星界洞悉', value: 18 }, { label: '明朗之靴', value: 12 }],
-    popupVisible: false,
-    searchKey: "",
+    popupVisible: false,   
+    searchKey: "",   
     roles: "",
-    heroList: [],
-
+    heroList: [], 
+    init:true,
   },
   created() {
     this.getHeroList();
@@ -162,8 +162,13 @@ new Vue({
       var { data } = await axios.get(`./data/${hero.heroId}.json`);
       this.$indicator.close();
       var title = data.hero.title;
-      var skin = data.skins.shift();
-      var icon = skin.iconImg;
+      data.skins = data.skins.filter(item=>{
+        return item.iconImg&&item.loadingImg  
+      })
+      var random = Math.floor(Math.random()*data.skins.length); 
+      var skin = data.skins[random]; 
+      // var icon = skin.iconImg;
+      var icon = `//game.gtimg.cn/images/lol/act/img/champion/${data.hero.alias}.png`;
       var loadingImg = skin.loadingImg;
       var loadingImgStyleStr = `'url(${loadingImg})'`
       var spellSort = ["passive", "q", "w", "e", "r"]
@@ -194,6 +199,7 @@ new Vue({
     },
     resetAll: _.throttle(function () {
       this.lineList.forEach(line => {
+        line.heroDetail =null; 
         line.playerSkills.forEach(skill => {
           skill.canUse = 0;
         })
@@ -279,3 +285,9 @@ new Vue({
     },
   },
 });
+new  Vue({
+  el:"#initLoading",
+  data:{
+    inint:true
+  }
+})
