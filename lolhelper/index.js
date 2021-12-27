@@ -288,6 +288,6 @@ new Vue({
 new  Vue({
   el:"#initLoading",
   data:{
-    inint:true
+    init:true
   }
 })
