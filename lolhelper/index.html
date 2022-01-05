@@ -33,7 +33,7 @@
     <!-- 引入组件库 -->
     <script src="https://unpkg.com/mint-ui/lib/index.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://unpkg.com/vue-long-click@0.0.4/dist/libs/vue-long-click.umd.min.js"></script>
+    <!-- <script src="https://unpkg.com/vue-long-click@0.0.4/dist/libs/vue-long-click.umd.min.js"></script> -->
     <title>LOL辅助</title>
   </head>
 
@@ -81,7 +81,7 @@
                     :key="index"
                     :src="subitem.icon"
                     alt="subitem.name"
-                    v-on:touchstart.prevent="clickIcon(item,subitem)" 
+                    v-on:click="clickIcon(item,subitem)" 
                   />
                   <span class="cd"
                     >{{subitem.canUse?subitem.canUse+'s':''}}</span
@@ -133,14 +133,14 @@
                   v-for="(subitem, index) in item.heroDetail.spells"
                 >
                   <div     
-                  v-longclick="()=>longClickSkillIcon(subitem)">
+                  >
                     <img
                       class="player-skill"
                       :class="{gray:subitem.canUse}"
                       :key="index"
                       :src="subitem.abilityIconPath"
                       alt="subitem.name" 
-                      v-on:touchstart.prevent="clickHeroSkillIcon(item,subitem)" 
+                      v-on:click="clickHeroSkillIcon(item,subitem)" 
                     />
                   </div>
 
@@ -148,7 +148,7 @@
                     >{{subitem.canUse?subitem.canUse+'s':''}}</span
                   >
 
-                  <p class="skill-name">{{subitem.name}}</p>
+                  <p class="skill-name" v-on:click="showSkillEx(subitem)">{{subitem.name}}</p>
                   <p v-if="subitem.spellKey!='passive'" class="skill-des">
                     <span v-on:click="changeGrade(subitem,-1)">-</span
                     >{{subitem.grade+1}}级
@@ -177,11 +177,9 @@
       </div>
       <div class="tip">
         <span>tip:</span>
-        <p>技能cd期间再次点击减少10s</p>
+        <p>技能cd期间再次点击减少10s,点击英雄技能名称查看技能说明</p>
         <p>右上角编辑可以增加或删除召唤师技能</p>
-        <p>长按英雄技能可查看英雄技能说明</p>
-        <p>当前版本星界洞悉召唤师技能急速为：18</p>
-        <p>当前版本明朗之靴召唤师技能急速为：12</p>
+        <p>界洞悉召唤师技能急速为：18,明朗之靴召唤师技能急速为：12</p>
       </div>
       <div class="mask" v-if="showSkillsDia" v-on:click="showSkillsDia=false">
         <div class="dia" v-on:click.stop="">

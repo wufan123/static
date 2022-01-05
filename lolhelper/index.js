@@ -88,11 +88,11 @@ let list = [
     playerSkills: ["闪现", "虚弱", "治疗", "点燃"],
   },
 ];
-const longClickInstance = window["vue-long-click"].longClickDirective({
-  delay: 600,
-  interval: 600,
-});
-Vue.directive("longclick", longClickInstance);
+// const longClickInstance = window["vue-long-click"].longClickDirective({
+//   delay: 600,
+//   interval: 600,
+// });
+// Vue.directive("longclick", longClickInstance);
 new Vue({
   el: "#app",
   data: {
@@ -149,7 +149,7 @@ new Vue({
         hero.spellSpeed = newSpeed < 0 ? 0 : newSpeed;  
       }
     },
-    longClickSkillIcon: function (skill,ev) {  
+    showSkillEx: function (skill) {  
       this.$messagebox(skill.name, skill.description);
     },
     changeGrade: function (skill, num) {
