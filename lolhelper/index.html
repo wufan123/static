@@ -38,7 +38,7 @@
   </head>
 
   <body>
-    <div id="app" :class="{init:init}">
+    <div id="app" :class="{init:init}"  >
       <div>
         <!-- <p>召唤师技能</p> -->
         <mt-header fixed title="LOL辅助"
@@ -81,7 +81,7 @@
                     :key="index"
                     :src="subitem.icon"
                     alt="subitem.name"
-                    v-on:click="clickIcon(item,subitem)"
+                    v-on:touchstart.prevent="clickIcon(item,subitem)" 
                   />
                   <span class="cd"
                     >{{subitem.canUse?subitem.canUse+'s':''}}</span
@@ -132,14 +132,15 @@
                   :class="subitem.spellKey"
                   v-for="(subitem, index) in item.heroDetail.spells"
                 >
-                  <div      v-on:click="clickHeroSkillIcon(item,subitem)"
+                  <div     
                   v-longclick="()=>longClickSkillIcon(subitem)">
                     <img
                       class="player-skill"
                       :class="{gray:subitem.canUse}"
                       :key="index"
                       :src="subitem.abilityIconPath"
-                      alt="subitem.name"
+                      alt="subitem.name" 
+                      v-on:touchstart.prevent="clickHeroSkillIcon(item,subitem)" 
                     />
                   </div>
 
