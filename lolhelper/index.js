@@ -182,6 +182,7 @@ new Vue({
       data.skins = data.skins.filter((item) => {
         return item.iconImg && item.loadingImg;
       });
+      var enemytips = data.hero.enemytips;
       var random = Math.floor(Math.random() * data.skins.length);
       var skin = data.skins[random];
       // var icon = skin.iconImg;
@@ -206,6 +207,7 @@ new Vue({
       });
       var spellSpeed = 0;
       this.activeLine.heroDetail = {
+        enemytips,
         spellSpeed,
         title,
         icon,

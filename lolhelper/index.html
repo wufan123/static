@@ -127,6 +127,11 @@
                   >
                 </div>
                 <div class="cf"></div>
+
+                <div class="enemy-tips">
+                   <p><b>克制建议:</b></p>
+                   <p v-for="(item,index) in item.heroDetail.enemytips" :key="index">{{item}}</p>
+                </div>
                 <div
                   class="img-box"
                   :class="subitem.spellKey"
