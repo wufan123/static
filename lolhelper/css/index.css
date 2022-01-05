@@ -1,7 +1,14 @@
 @charset "UTF-8";
+.mint-msgbox-content .mint-msgbox-message{
+    word-break: break-all;
+    text-align: left;
+    line-height: .42rem;
+    font-size: .28rem;
+}
 .enemy-tips{
     padding: .2rem .6rem .3rem 0;
     font-size: .22rem;
+   
 }
 .mint-searchbar-core {
   margin-left: 0.2rem;
