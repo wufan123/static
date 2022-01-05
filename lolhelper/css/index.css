@@ -267,6 +267,7 @@
     height: 1rem;
     border-radius: 4px;
     background: #ccc;
+    pointer-events: none;
 }
 
 .battle-line li .toollist {

@@ -1,166 +1,247 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui"
+    />
+    <link rel="icon" href="./imgs/SummonerFlash.png" type="image/x-icon" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta content="telephone=no, email=no" name="format-detection" />
+    <!-- 启用360浏览器的极速模式(webkit) -->
+    <meta name="renderer" content="webkit" />
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+    <meta name="HandheldFriendly" content="true" />
+    <!-- 微软的老式浏览器 -->
+    <meta name="screen-orientation" content="portrait" />
+    <!-- uc强制竖屏 -->
+    <meta name="x5-orientation" content="portrait" />
+    <!-- QQ强制竖屏 -->
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/mint-ui/lib/style.css" />
+    <link rel="stylesheet" href="./css/loading.css" />
+    <link rel="stylesheet" href="./css/reset.css" />
+    <link rel="stylesheet" href="./css/index.css" />
+    <script src="./vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/loadsh@0.0.4/lodash.min.js"></script>
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue-long-click@0.0.4/dist/libs/vue-long-click.umd.min.js"></script>
+    <title>LOL辅助</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="width=device-width,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui" />
-  <link rel="icon" href="./imgs/SummonerFlash.png" type="image/x-icon" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <meta content="telephone=no, email=no" name="format-detection" />
-  <!-- 启用360浏览器的极速模式(webkit) -->
-  <meta name="renderer" content="webkit" />
-  <!-- 避免IE使用兼容模式 -->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
-  <meta name="HandheldFriendly" content="true" />
-  <!-- 微软的老式浏览器 -->
-  <meta name="screen-orientation" content="portrait" />
-  <!-- uc强制竖屏 -->
-  <meta name="x5-orientation" content="portrait" />
-  <!-- QQ强制竖屏 -->
-  <!-- 引入样式 -->
-  <link rel="stylesheet" href="https://unpkg.com/mint-ui/lib/style.css">
-  <link rel="stylesheet" href="./css/loading.css">
-  <link rel="stylesheet" href="./css/reset.css" />
-  <link rel="stylesheet" href="./css/index.css" />
-  <script src="./vue.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/loadsh@0.0.4/lodash.min.js"></script>
-  <!-- 引入组件库 -->
-  <script src="https://unpkg.com/mint-ui/lib/index.js"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <script src="https://unpkg.com/vue-long-click@0.0.4/dist/libs/vue-long-click.umd.min.js"></script>
-  <title>LOL辅助</title>
-</head>
-
-<body>
-  <div id="app" :class="{init:init}">
-    <div>
-      <!-- <p>召唤师技能</p> -->
-      <mt-header fixed title="LOL辅助"><span class="reset1" slot="right" v-on:click="resetAll"></span> </mt-header>
-      <ul class="battle-line">
-        <!-- <li class="top-bar">
+  <body>
+    <div id="app" :class="{init:init}">
+      <div>
+        <!-- <p>召唤师技能</p> -->
+        <mt-header fixed title="LOL辅助"
+          ><span class="reset1" slot="right" v-on:click="resetAll"></span>
+        </mt-header>
+        <ul class="battle-line">
+          <!-- <li class="top-bar">
           <div class="btn1" v-on:click="resetAll">重置游戏</div>
         </li> -->
-        <!--  -->
-        <li v-for="(item, index) in lineList" :key="index" 
-          :style="{backgroundImage:item.heroDetail?'url('+item.heroDetail.loadingImg+')':'#fff'}">    
-          <div class="wrapper">
-            <span class="tag"> {{item.name}}{{item.heroDetail?`-${item.heroDetail.title}`:""}} </span>
-            <div class="toollist">
-              <mt-checklist v-model="item.skillSpeed" :options="summonerSpeedList">
-              </mt-checklist>
-              <a class="edit" v-on:click="item.mode=item.mode?0:1">{{item.mode?'编辑':'完成'}}</a>
-              <!-- 星界洞悉
+          <!--  -->
+          <li
+            v-for="(item, index) in lineList"
+            :key="index"
+            :style="{backgroundImage:item.heroDetail?'url('+item.heroDetail.loadingImg+')':'#fff'}"
+          >
+            <div class="wrapper">
+              <span class="tag">
+                {{item.name}}{{item.heroDetail?`-${item.heroDetail.title}`:""}}
+              </span>
+              <div class="toollist">
+                <mt-checklist
+                  v-model="item.skillSpeed"
+                  :options="summonerSpeedList"
+                >
+                </mt-checklist>
+                <a class="edit" v-on:click="item.mode=item.mode?0:1"
+                  >{{item.mode?'编辑':'完成'}}</a
+                >
+                <!-- 星界洞悉
               <input type="checkbox" value="true" v-model="item.skillSpeed" /> -->
-            </div>
-            <div class="skill-box">
-              <div class="img-box" v-for="(subitem, index) in item.playerSkills">
-                <img class="player-skill" :class="{gray:subitem.canUse}" :key="index" :src="subitem.icon"
-                  alt="subitem.name" v-on:click="clickIcon(item,subitem)" />
-                <span class="cd">{{subitem.canUse?subitem.canUse+'s':''}}</span>
-                <span class="delete1" v-show="!item.mode"></span>
-                <div class="btn1" v-show="subitem.canUse" v-on:click="subitem.canUse=0">
-                  <span class="reset1"></span> 
-                  <!-- 重置 -->
+              </div>
+              <div class="skill-box">
+                <div
+                  class="img-box"
+                  v-for="(subitem, index) in item.playerSkills"
+                >
+                  <img
+                    class="player-skill"
+                    :class="{gray:subitem.canUse}"
+                    :key="index"
+                    :src="subitem.icon"
+                    alt="subitem.name"
+                    v-on:click="clickIcon(item,subitem)"
+                  />
+                  <span class="cd"
+                    >{{subitem.canUse?subitem.canUse+'s':''}}</span
+                  >
+                  <span class="delete1" v-show="!item.mode"></span>
+                  <div
+                    class="btn1"
+                    v-show="subitem.canUse"
+                    v-on:click="subitem.canUse=0"
+                  >
+                    <span class="reset1"></span>
+                    <!-- 重置 -->
+                  </div>
+                </div>
+                <div
+                  class="img-box"
+                  v-if="!item.mode"
+                  v-on:click="showSkillsDia=true;activeLine=item;"
+                >
+                  <img class="player-skill" src="./imgs/add.png" alt="" />
                 </div>
               </div>
-              <div class="img-box" v-if="!item.mode" v-on:click="showSkillsDia=true;activeLine=item;">
-                <img class="player-skill" src="./imgs/add.png" alt="" />
+              <div class="expand-box" v-if="!item.heroDetail">
+                <!-- <p>添加对线英雄 +</p> -->
+                <span
+                  class="expand"
+                  v-on:click="popupVisible=true;activeLine=item;"
+                ></span>
               </div>
-            </div>
-            <div class="expand-box" v-if="!item.heroDetail">
-              <!-- <p>添加对线英雄 +</p> -->
-              <span class="expand" v-on:click="popupVisible=true;activeLine=item;"></span>
-            </div>
-            <div class="skill-box hero" v-if="item.heroDetail">
-              <div class="btn1 icon" v-on:click="popupVisible=true;activeLine=item;"><img
-                :src="item.heroDetail.icon" alt=""> 更换英雄</div>
-              <div class="skill-des right"><span v-on:click="changeHeroSpeed(item.heroDetail,-10)">-</span>技能急速:{{item.heroDetail.spellSpeed}}<span v-on:click="changeHeroSpeed(item.heroDetail,10)">+</span> </div>
-              <div class="cf "></div>
-              <div class="img-box" :class="subitem.spellKey" v-for="(subitem, index) in item.heroDetail.spells" >
-                <img class="player-skill" :class="{gray:subitem.canUse}" :key="index" :src="subitem.abilityIconPath"
-                  alt="subitem.name" v-on:click="clickHeroSkillIcon(item,subitem)"  v-longclick="()=>longClickSkillIcon(subitem)" />
-                <span class="cd">{{subitem.canUse?subitem.canUse+'s':''}}</span>
-        
-                <p class="skill-name">{{subitem.name}}</p>
-                <p v-if="subitem.spellKey!='passive'" class="skill-des"><span v-on:click="changeGrade(subitem,-1)">-</span>{{subitem.grade+1}}级 <span v-on:click="changeGrade(subitem,1)">+</span></p>
-                <div class="btn1" v-show="subitem.canUse" v-on:click="subitem.canUse=0">
-                  <span class="reset1"></span>
-                  <!-- 重置 -->
+              <div class="skill-box hero" v-if="item.heroDetail">
+                <div
+                  class="btn1 icon"
+                  v-on:click="popupVisible=true;activeLine=item;"
+                >
+                  <img :src="item.heroDetail.icon" alt="" /> 更换英雄
+                </div>
+                <div class="skill-des right">
+                  <span v-on:click="changeHeroSpeed(item.heroDetail,-10)"
+                    >-</span
+                  >技能急速:{{item.heroDetail.spellSpeed}}<span
+                    v-on:click="changeHeroSpeed(item.heroDetail,10)"
+                    >+</span
+                  >
+                </div>
+                <div class="cf"></div>
+                <div
+                  class="img-box"
+                  :class="subitem.spellKey"
+                  v-for="(subitem, index) in item.heroDetail.spells"
+                >
+                  <div      v-on:click="clickHeroSkillIcon(item,subitem)"
+                  v-longclick="()=>longClickSkillIcon(subitem)">
+                    <img
+                      class="player-skill"
+                      :class="{gray:subitem.canUse}"
+                      :key="index"
+                      :src="subitem.abilityIconPath"
+                      alt="subitem.name"
+                    />
+                  </div>
+
+                  <span class="cd"
+                    >{{subitem.canUse?subitem.canUse+'s':''}}</span
+                  >
+
+                  <p class="skill-name">{{subitem.name}}</p>
+                  <p v-if="subitem.spellKey!='passive'" class="skill-des">
+                    <span v-on:click="changeGrade(subitem,-1)">-</span
+                    >{{subitem.grade+1}}级
+                    <span v-on:click="changeGrade(subitem,1)">+</span>
+                  </p>
+                  <div
+                    class="btn1"
+                    v-show="subitem.canUse"
+                    v-on:click="subitem.canUse=0"
+                  >
+                    <span class="reset1"></span>
+                    <!-- 重置 -->
+                  </div>
+                </div>
+                <div
+                  class="img-box"
+                  v-if="!item.mode"
+                  v-on:click="showSkillsDia=true;activeLine=item;"
+                >
+                  <img class="player-skill" src="./imgs/add.png" alt="" />
                 </div>
               </div>
-              <div class="img-box" v-if="!item.mode" v-on:click="showSkillsDia=true;activeLine=item;">
-                <img class="player-skill" src="./imgs/add.png" alt="" />
-              </div>
             </div>
+          </li>
+        </ul>
+      </div>
+      <div class="tip">
+        <span>tip:</span>
+        <p>技能cd期间再次点击减少10s</p>
+        <p>右上角编辑可以增加或删除召唤师技能</p>
+        <p>长按英雄技能可查看英雄技能说明</p>
+        <p>当前版本星界洞悉召唤师技能急速为：18</p>
+        <p>当前版本明朗之靴召唤师技能急速为：12</p>
+      </div>
+      <div class="mask" v-if="showSkillsDia" v-on:click="showSkillsDia=false">
+        <div class="dia" v-on:click.stop="">
+          <span class="close" v-on:click="showSkillsDia=false"></span>
+          <p class="title">选择召唤师技能</p>
+          <ul class="skills">
+            <li
+              v-for="(item, index) in summonerSkills"
+              :key="index"
+              v-on:click.stop="item.select = !item.select"
+            >
+              <img :src="item.icon" alt="" />
+              <p>{{item.name}}</p>
+              <span v-show="item.select" class="select"></span>
+            </li>
+          </ul>
+          <div class="btn1" v-on:click="addSkills">确认</div>
+        </div>
+      </div>
+      <mt-popup v-model="popupVisible" position="right">
+        <div class="search-pop">
+          <mt-header fixed title="选择英雄">
+            <mt-button
+              slot="left"
+              icon="back"
+              v-on:click="popupVisible=false"
+            ></mt-button>
+          </mt-header>
+          <div class="poptool">
+            <mt-search v-model="searchKey" placeholder="搜索英雄"></mt-search>
+            <mt-navbar v-model="roles">
+              <mt-tab-item id="">全部</mt-tab-item>
+              <mt-tab-item id="fighter">战士</mt-tab-item>
+              <mt-tab-item id="mage">法师</mt-tab-item>
+              <mt-tab-item id="assassin">刺客</mt-tab-item>
+              <mt-tab-item id="tank">坦克</mt-tab-item>
+              <mt-tab-item id="marksman">射手</mt-tab-item>
+              <mt-tab-item id="support">辅助</mt-tab-item>
+            </mt-navbar>
           </div>
 
-        </li>
-
-      </ul>
-
-    </div>
-    <div class="tip">
-      <span>tip:</span>
-      <p>技能cd期间再次点击减少10s</p>
-      <p>右上角编辑可以增加或删除召唤师技能</p>
-      <p>长按英雄技能可查看英雄技能说明</p>
-      <p>当前版本星界洞悉召唤师技能急速为：18</p>
-      <p>当前版本明朗之靴召唤师技能急速为：12</p>  
-    </div>
-    <div class="mask" v-if="showSkillsDia" v-on:click="showSkillsDia=false">
-      <div class="dia" v-on:click.stop="">
-        <span class="close" v-on:click="showSkillsDia=false"></span>
-        <p class="title">选择召唤师技能</p>
-        <ul class="skills">
-          <li v-for="(item, index) in summonerSkills" :key="index" v-on:click.stop="item.select = !item.select">
-            <img :src="item.icon" alt="" />
-            <p>{{item.name}}</p>
-            <span v-show="item.select" class="select"></span>
-          </li>
-        </ul>
-        <div class="btn1" v-on:click="addSkills">确认</div>
-      </div>
-    </div>
-    <mt-popup v-model="popupVisible" position="right">
-      <div class="search-pop">
-        <mt-header fixed title="选择英雄">
-          <mt-button slot="left" icon="back" v-on:click="popupVisible=false"></mt-button>
-        </mt-header>
-        <div class="poptool">
-          <mt-search v-model="searchKey" placeholder="搜索英雄"></mt-search>
-          <mt-navbar v-model="roles">
-            <mt-tab-item id="">全部</mt-tab-item>
-            <mt-tab-item id="fighter">战士</mt-tab-item>
-            <mt-tab-item id="mage">法师</mt-tab-item>
-            <mt-tab-item id="assassin">刺客</mt-tab-item>
-            <mt-tab-item id="tank">坦克</mt-tab-item>
-            <mt-tab-item id="marksman">射手</mt-tab-item>
-            <mt-tab-item id="support">辅助</mt-tab-item>
-          </mt-navbar>
+          <ul class="hero-list">
+            <li
+              v-for="(item, index) in rolesHeroList"
+              :key="index"
+              v-on:click="chooseHero(item)"
+            >
+              <img :src="item.icon" alt="" />
+              <p>{{item.name}}</p>
+            </li>
+            <li class="tip" v-show="!rolesHeroList.length">
+              没有找到相关英雄哦
+            </li>
+          </ul>
         </div>
-    
-        <ul class="hero-list">
-          <li v-for="(item, index) in rolesHeroList" :key="index" v-on:click="chooseHero(item)">
-            <img  :src="item.icon" alt="">
-            <p>{{item.name}}</p>
-          </li>
-          <li class="tip" v-show="!rolesHeroList.length">
-            没有找到相关英雄哦
-          </li>
-        </ul>
-      </div>
-    </mt-popup>
-
-  </div>
-  <div id="initLoading" :class="{init:init}">  
-    <img src="./imgs/SummonerFlash.png" alt="">
-    <p>页面载入中...</p>
-  </div>
-  <script src="index.js"></script>
-</body>
-
+      </mt-popup>
+    </div>
+    <div id="initLoading" :class="{init:init}">
+      <img src="./imgs/SummonerFlash.png" alt="" />
+      <p>页面载入中...</p>
+    </div>
+    <script src="index.js"></script>
+  </body>
 </html>
